@@ -6,19 +6,35 @@ import {
   Platform,
   TouchableHighlight,
   Text,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
 import { ArViewerView } from 'react-native-ar-viewer';
 import RNFS from 'react-native-fs';
+
+const IMG_H = 70;
+const IMG_W = 75;
 
 export default function App() {
   const [localModelPath, setLocalModelPath] = React.useState<string>();
   const [showArView, setShowArView] = React.useState(true);
   const ref = React.useRef() as React.MutableRefObject<ArViewerView>;
 
-  const loadPath = async () => {
+  const MODELS_AND = [
+    'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.glb?raw=true',
+    'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/marbel_horse.glb?raw=true',
+    'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/vase.glb?raw=true',
+    'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/tesla_logo.glb?raw=true',
+    'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/table.glb?raw=true',
+    'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/antiques_watch.glb?raw=true',
+  ]
+
+
+  const loadPath = async (ind: number) => {
+
     const modelSrc =
       Platform.OS === 'android'
-        ? 'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.glb?raw=true'
+        ? MODELS_AND[ind]
         : 'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.usdz?raw=true';
 
     
@@ -26,7 +42,7 @@ export default function App() {
       Platform.OS === 'android' ? 'glb' : 'usdz'
     }`;
     const exists = await RNFS.exists(modelPath);
-    console.log(modelPath,',',exists);
+    console.log(MODELS_AND[ind]);
     if (!exists) {
       await RNFS.downloadFile({
         fromUrl: modelSrc,
@@ -38,9 +54,9 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    loadPath();
+    loadPath(1);
     // console.log(RNFS.readDir);
-  });
+  },[]);
 
   const takeSnapshot = () => {
     ref.current?.takeScreenshot().then(async (base64Image) => {
@@ -63,6 +79,11 @@ export default function App() {
 
   const mountUnMount = () => setShowArView(!showArView);
 
+  function changeModel(ind: number): void {
+    loadPath(ind)
+    // setLocalModelPath
+  }
+
   return (
     <View style={styles.container}>
       {localModelPath && showArView && (
@@ -81,6 +102,32 @@ export default function App() {
           ref={ref}
         />
       )}
+      <View style={styles.imageGrid}>
+          <TouchableOpacity onPress={() => changeModel(0)} style={styles.imageContainer}>
+              <Image 
+              source={require('./src/Images/table.png')} 
+              style={{height:IMG_H,width:IMG_W}}
+              />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imageContainer}>
+              <Image 
+              source={require('./src/Images/vase.png')} 
+              style={{height:IMG_H,width:IMG_W}}
+              />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imageContainer}>
+              <Image 
+              source={require('./src/Images/marbel_horse.png')} 
+              style={{height:IMG_H,width:IMG_W}}
+              />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.imageContainer}>
+              <Image 
+              source={require('./src/Images/tesla_logo.png')} 
+              style={{height:IMG_H,width:IMG_W}}
+              />
+          </TouchableOpacity>
+      </View>
       <View style={styles.footer}>
         <TouchableHighlight onPress={takeSnapshot} style={styles.button}>
           <Text style={{color:'black'}}>Take Snapshot</Text>
@@ -102,19 +149,35 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'lightgrey',
+    justifyContent:'center'
+    // borderWidth:1
   },
   arView: {
-    flex: 2,
+    flex: 0.8,
+  },
+  imageGrid: {
+    flex: 0.12,
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'space-evenly'
+  },
+  imageContainer: {
+    backgroundColor:'red',
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:10,
+    overflow:'hidden'
   },
   footer: {
-    flex: 1,
+    flex: 0.1,
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'nowrap',
     flexDirection: 'row',
     backgroundColor: 'white',
   },
+  
   button: {
     borderColor: 'black',
     borderWidth: 1,
