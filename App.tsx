@@ -21,7 +21,7 @@ export default function App() {
   const ref = React.useRef() as React.MutableRefObject<ArViewerView>;
 
   const MODELS_AND = [
-    'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.glb?raw=true',
+    // 'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.glb?raw=true',
     'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/marbel_horse.glb?raw=true',
     'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/vase.glb?raw=true',
     'https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/tesla_logo.glb?raw=true',
@@ -30,19 +30,19 @@ export default function App() {
   ]
 
 
-  const loadPath = async (ind: number) => {
+  const loadPath = async (model: string) => {
 
     const modelSrc =
       Platform.OS === 'android'
-        ? MODELS_AND[ind]
+        ? `https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/${model}.glb?raw=true`
         : 'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.usdz?raw=true';
 
     
-    const modelPath = `${RNFS.DocumentDirectoryPath}/model.${
+    const modelPath = `${RNFS.DocumentDirectoryPath}/${model}.${
       Platform.OS === 'android' ? 'glb' : 'usdz'
     }`;
     const exists = await RNFS.exists(modelPath);
-    console.log(MODELS_AND[ind]);
+    // console.log(MODELS_AND[ind]);
     if (!exists) {
       await RNFS.downloadFile({
         fromUrl: modelSrc,
@@ -54,7 +54,7 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    loadPath(1);
+    loadPath('nike_shoe');
     // console.log(RNFS.readDir);
   },[]);
 
@@ -79,8 +79,9 @@ export default function App() {
 
   const mountUnMount = () => setShowArView(!showArView);
 
-  function changeModel(ind: number): void {
-    loadPath(ind)
+  function changeModel(model: string): void {
+    ref.current?.reset();
+    loadPath(model)
     // setLocalModelPath
   }
 
@@ -103,25 +104,25 @@ export default function App() {
         />
       )}
       <View style={styles.imageGrid}>
-          <TouchableOpacity onPress={() => changeModel(0)} style={styles.imageContainer}>
+          <TouchableOpacity onPress={() => changeModel('table')} style={styles.imageContainer}>
               <Image 
               source={require('./src/Images/table.png')} 
               style={{height:IMG_H,width:IMG_W}}
               />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageContainer}>
+          <TouchableOpacity onPress={() => changeModel('vase')} style={styles.imageContainer}>
               <Image 
               source={require('./src/Images/vase.png')} 
               style={{height:IMG_H,width:IMG_W}}
               />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageContainer}>
+          <TouchableOpacity onPress={() => changeModel('marbel_horse')} style={styles.imageContainer}>
               <Image 
               source={require('./src/Images/marbel_horse.png')} 
               style={{height:IMG_H,width:IMG_W}}
               />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.imageContainer}>
+          <TouchableOpacity onPress={() => changeModel('tesla_logo')} style={styles.imageContainer}>
               <Image 
               source={require('./src/Images/tesla_logo.png')} 
               style={{height:IMG_H,width:IMG_W}}
