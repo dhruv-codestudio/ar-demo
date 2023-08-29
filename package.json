@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@react-three/fiber": "^8.13.7",
-    "@viro-community/react-viro": "^2.23.0",
     "expo": "^49.0.0",
     "expo-gl": "~13.0.1",
     "expo-three": "^7.0.0",

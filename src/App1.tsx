@@ -51,13 +51,13 @@ export default function App() {
         toFile: modelPath,
       }).promise;
     }
-    console.log(modelPath);
+    console.log(modelSrc,'--',modelPath);
 
     setLocalModelPath(modelPath);
   };
 
   React.useEffect(() => {
-    loadPath('burger');
+    loadPath('rolex');
     // console.log(RNFS.readDir);
   },[]);
 
