@@ -36,12 +36,12 @@ export default function App() {
       Platform.OS === 'android'
         // ? `https://github.com/dhruv-codestudio/ar-demo/blob/6b524ad928fa7d17b9fe223bdc233d58b6361d0e/src/models/pizza.obj`
         // ? `https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/${model}.glb?raw=true`
-        ? `https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/${model}.fbx?raw=true`
+        ? `https://github.com/dhruv-codestudio/ar-demo/blob/main/src/models/${model}.glb?raw=true`
         : 'https://github.com/riderodd/react-native-ar/blob/main/example/src/dice.usdz?raw=true';
 
     
     const modelPath = `${RNFS.DocumentDirectoryPath}/${model}.${
-      Platform.OS === 'android' ? 'fbx' : 'usdz'
+      Platform.OS === 'android' ? 'glb' : 'usdz'
     }`;
     const exists = await RNFS.exists(modelPath);
     // console.log(MODELS_AND[ind]);
@@ -57,7 +57,7 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    loadPath('pizza1');
+    loadPath('burger');
     // console.log(RNFS.readDir);
   },[]);
 
